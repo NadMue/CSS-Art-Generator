@@ -1,21 +1,47 @@
+'use client';
+
 import React from 'react';
 import Button from './Button';
 import SidebarSection from './SidebarSection';
+import {useEditorStore} from '@/store/useEditorStore';
 
 const Sidebar: React.FC = () => {
+  const { layers, selectedLayerId, selectLayer, addLayer } = useEditorStore();
+
   return (
     <aside className="w-64 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 h-screen flex flex-col p-4 gap-4 overflow-y-auto justify-between">
       <SidebarSection title="Layers">
-        <Button fullWidth className="mb-4">
-          <span>+</span> Add New Layer
-        </Button>
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <Button variant="outline" className="text-xs" onClick={() => addLayer('circle')}>
+            + Circle
+          </Button>
+          <Button variant="outline" className="text-xs" onClick={() => addLayer('square')}>
+            + Square
+          </Button>
+          <Button variant="outline" className="text-xs" onClick={() => addLayer('rectangle')}>
+            + Rect
+          </Button>
+          <Button variant="outline" className="text-xs" onClick={() => addLayer('triangle')}>
+            + Triangle
+          </Button>
+        </div>
         <div className="space-y-2">
-          <div className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700">
-            Layer 1 (Circle)
-          </div>
-          <div className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700">
-            Layer 2 (Square)
-          </div>
+          {layers.map((layer) => (
+            <div
+              key={layer.id}
+              onClick={() => selectLayer(layer.id)}
+              className={`p-2 border rounded-md text-sm cursor-pointer transition-colors ${
+                selectedLayerId === layer.id
+                  ? 'bg-pink-100 border-pink-500 dark:bg-pink-900/30 dark:border-pink-500'
+                  : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+              }`}
+            >
+              {layer.name}
+            </div>
+          ))}
+          {layers.length === 0 && (
+            <p className="text-xs text-zinc-500 text-center py-4">No layers added yet</p>
+          )}
         </div>
       </SidebarSection>
 
